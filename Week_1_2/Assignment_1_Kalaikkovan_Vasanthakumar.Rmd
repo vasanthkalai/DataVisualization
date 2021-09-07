@@ -1,0 +1,75 @@
+---
+title: "Assignment 1"
+author: "Vasanthakumar Kalaikkovan"
+date: "06/09/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# loading dataframe
+df<-read.csv("obama-approval-ratings.csv")
+```
+
+
+```{r}
+# head of df
+head(df)
+```
+
+```{r}
+par(mar=c(4, 10, 1, 1))
+barplot(t(as.matrix(df$Approve)),names.arg = df$ï..Issue,
+        col="dodgerblue3",main="Approval Status",xlab="Issue",horiz=TRUE,las=1)
+```
+```{r}
+rownames(df)<-df$ï..Issue
+df<-subset(df,select=c(Approve,Disapprove,None))
+head(df)
+```
+
+```{r}
+par(mar=c(5, 5, 1, 8))
+barplot(t(as.matrix(df)),
+        main = "Obama Approval Status",
+        xlab = "Issue type", ylab = "Count",
+        col = c( "darkblue", "red","darkgrey"),
+        legend.text = c("Approve","Disapprove","None"),args.legend = list(x = "topright",
+                           inset = c(-0.3, 0)),
+        beside = FALSE)
+```
+
+```{r}
+pct<-round(df$Approve/sum(df$Approve)*100)
+lbls<-paste(rownames(df),pct)
+lbls <- paste(lbls,"%",sep="")
+pie(df$Approve,labels = lbls,col=rainbow(length(lbls)),main="Approval Status")
+```
+
+```{r}
+library(ggplot2)
+ 
+# Create test data.
+data <- data.frame(
+  category=rownames(df),
+  count=df$Approve
+)
+ 
+# Compute percentages
+data$fraction = data$count / sum(data$count)
+
+# Compute the cumulative percentages (top of each rectangle)
+data$ymax = cumsum(data$fraction)
+
+# Compute the bottom of each rectangle
+data$ymin = c(0, head(data$ymax, n=-1))
+ 
+# Make the plot
+ggplot(data, aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill=category)) +ggtitle("Approval Status")+
+     geom_rect() +
+     coord_polar(theta="y") + 
+     xlim(c(2, 4))
+```
