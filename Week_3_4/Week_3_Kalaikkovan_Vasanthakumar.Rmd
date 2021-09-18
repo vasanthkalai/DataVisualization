@@ -1,0 +1,43 @@
+---
+title: "Week_3_Line_Chart_Step_Chart"
+author: "Vasanthakumar Kalaikkovan"
+date: "18/09/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Packages, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+library(readxl)
+library(tidyverse)
+library(reshape2)
+```
+
+```{r dataimport, echo=FALSE}
+df<-read.csv("world-population.csv")
+df_sorted<-df[with(df,order(ï..Year)),]
+df_sorted$Year<-1:nrow(df_sorted)
+print(is.data.frame(df_sorted))
+print(ncol(df_sorted))
+print(nrow(df_sorted))
+
+YearVector<-as.vector(df_sorted$ï..Year)
+PopVector<-as.vector(df_sorted$Population)
+```
+
+```{r LineChart, echo=FALSE}
+plot(PopVector,YearVector,type="l",col="blue",lwd=5,xlab="Population",ylab="Year",main="World Population")
+dev.copy(png,"World_Population_Line_Chart_R.png")
+dev.off()
+```
+
+```{r StepChart, echo=FALSE}
+plot(PopVector,YearVector,type="s",col="blue",lwd=5,xlab="Population",ylab="Year",main="World Population")
+dev.copy(png,"World_Population_Step_Chart_R.png")
+dev.off()
+```
